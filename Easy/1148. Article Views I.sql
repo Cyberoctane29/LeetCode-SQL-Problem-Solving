@@ -11,27 +11,25 @@
 -- | viewer_id     | int     |
 -- | view_date     | date    |
 -- +---------------+---------+
--- There is no primary key (column with unique values) for this table, the table may have duplicate rows.
--- Each row of this table indicates that some viewer viewed an article (written by some author) on some date. 
--- Note that equal author_id and viewer_id indicate the same person.
+-- There is no primary key for this table, meaning it may have duplicate rows.
+-- Each row in this table indicates that some viewer viewed an article (written by some author) on a particular date.
+-- Note that if author_id and viewer_id are equal, it means the author viewed their own article.
 
 -- Problem Statement
 -- Write a solution to find all the authors that viewed at least one of their own articles.
 -- Return the result table sorted by id in ascending order.
 
--- Solution:
--- The query selects distinct author IDs where the author viewed their own article.
+-- SQL Solution
+SELECT DISTINCT author_id AS id
+FROM Views
+WHERE author_id = viewer_id
+ORDER BY id;
 
-SELECT 
-    DISTINCT author_id AS id
-FROM 
-    Views
-WHERE 
-    author_id = viewer_id
-ORDER BY 
-    id;
+-- Intuition:
+-- To find authors who have viewed their own articles, we need to look for rows where the author_id is equal to the viewer_id.
+-- The DISTINCT keyword ensures that each author_id is returned only once, even if an author has viewed multiple articles.
 
 -- Explanation:
--- The `DISTINCT` keyword ensures that each author ID appears only once in the result set.
--- The `WHERE` clause filters the records to only those where the author_id matches the viewer_id, indicating the author viewed their own article.
--- The `ORDER BY id` clause sorts the result by author_id in ascending order.
+-- This query selects the author_id from the Views table where the author_id matches the viewer_id, indicating the author viewed their own article.
+-- The DISTINCT keyword removes duplicates, ensuring that each author appears only once in the result.
+-- Finally, the results are ordered by the author_id (alias as id) in ascending order.

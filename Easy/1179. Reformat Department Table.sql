@@ -10,17 +10,15 @@
 -- | revenue     | int     |
 -- | month       | varchar |
 -- +-------------+---------+
--- In SQL, (id, month) is the primary key of this table.
--- The table has information about the revenue of each department per month.
--- The month has values in ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].
+-- The (id, month) combination is the primary key of this table.
+-- The table contains information about the revenue of each department per month.
+-- The 'month' column has values representing each month of the year ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].
 
 -- Problem Statement
 -- Reformat the table such that there is a department id column and a revenue column for each month.
 -- Return the result table in any order.
 
--- Solution:
--- The query uses conditional aggregation to pivot the monthly revenue data into separate columns.
-
+-- SQL Solution
 SELECT 
     id,
     SUM(CASE WHEN month = 'Jan' THEN revenue ELSE NULL END) AS Jan_revenue,
@@ -35,11 +33,14 @@ SELECT
     SUM(CASE WHEN month = 'Oct' THEN revenue ELSE NULL END) AS Oct_revenue,
     SUM(CASE WHEN month = 'Nov' THEN revenue ELSE NULL END) AS Nov_revenue,
     SUM(CASE WHEN month = 'Dec' THEN revenue ELSE NULL END) AS Dec_revenue
-FROM 
-    Department 
-GROUP BY 
-    id;
+FROM Department 
+GROUP BY id;
+
+-- Intuition:
+-- The task is to pivot the table so that each month has its own column representing the revenue for that month.
+-- We use the SUM function with a CASE statement to aggregate revenue for each month, grouping the results by department id.
 
 -- Explanation:
--- The `SUM(CASE WHEN month = 'MonthName' THEN revenue ELSE NULL END)` syntax is used to create a separate column for each month's revenue.
--- The `GROUP BY id` clause ensures that the data is aggregated by department id, providing the correct revenue for each department in each month.
+-- The CASE statements inside the SUM function check if the current month matches a specific month (e.g., 'Jan', 'Feb').
+-- If it matches, the revenue is included in the corresponding column for that month; otherwise, it returns NULL.
+-- GROUP BY id ensures that the results are grouped by department id, providing a single row for each department.

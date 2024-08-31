@@ -12,17 +12,22 @@
 -- | rating      | int     |
 -- +-------------+---------+
 -- This table may have duplicate rows.
--- This table contains information collected from some queries on a database.
--- The position column has a value from 1 to 500.
--- The rating column has a value from 1 to 5. Query with rating less than 3 is a poor query.
+-- The table contains information collected from some queries on a database.
+-- The position column has values ranging from 1 to 500.
+-- The rating column has values ranging from 1 to 5, with queries having a rating less than 3 considered as poor queries.
 
 -- Problem Statement
--- Write a solution to find each query_name, the quality and poor_query_percentage.
+-- We define query quality as:
+-- The average of the ratio between query rating and its position.
+-- 
+-- We also define poor query percentage as:
+-- The percentage of all queries with a rating less than 3.
+--
+-- Write a solution to find each query_name, the quality, and poor_query_percentage.
 -- Both quality and poor_query_percentage should be rounded to 2 decimal places.
+-- Return the result table in any order.
 
--- Solution:
--- The query calculates the average query quality and the percentage of poor queries (rating < 3) for each query_name.
-
+-- SQL Solution
 SELECT 
     query_name, 
     ROUND(AVG(rating / position), 2) AS quality, 
@@ -34,11 +39,13 @@ WHERE
 GROUP BY 
     query_name;
 
+-- Intuition:
+-- The task is to calculate the quality and poor_query_percentage for each query_name.
+-- Quality is defined as the average of the ratio between the query rating and its position.
+-- Poor_query_percentage is the percentage of queries with a rating less than 3.
+
 -- Explanation:
--- 1. `ROUND(AVG(rating / position), 2)` calculates the average quality for each query_name, which is the average ratio of rating to position, rounded to 2 decimal places.
--- 2. `ROUND(SUM(IF(rating < 3, 1, 0)) * 100 / COUNT(*), 2)` calculates the percentage of poor queries for each query_name:
---    - `SUM(IF(rating < 3, 1, 0))` counts how many queries have a rating less than 3.
---    - `COUNT(*)` gives the total number of queries for that query_name.
---    - The ratio is multiplied by 100 to convert it to a percentage and rounded to 2 decimal places.
--- 3. The `WHERE query_name IS NOT NULL` clause ensures that only valid query names are considered.
--- 4. The `GROUP BY query_name` clause groups the results by each query_name.
+-- The AVG function calculates the average ratio of rating to position for each query_name.
+-- The SUM(IF(...)) function counts the number of poor queries (rating < 3), and this count is then divided by the total number of queries to calculate the poor query percentage.
+-- Both results are rounded to 2 decimal places for clarity.
+-- The GROUP BY clause ensures that the calculations are done for each query_name individually.

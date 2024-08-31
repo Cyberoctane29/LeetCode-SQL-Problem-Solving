@@ -12,7 +12,7 @@
 -- | price         | int     |
 -- +---------------+---------+
 -- (product_id, start_date, end_date) is the primary key for this table.
--- Each row indicates the price of the product_id in the period from start_date to end_date.
+-- Each row indicates the price of the product_id during the period from start_date to end_date.
 -- For each product_id, there will be no overlapping periods.
 
 -- Table: UnitsSold
@@ -29,11 +29,9 @@
 -- Problem Statement
 -- Write a solution to find the average selling price for each product.
 -- The average_price should be rounded to 2 decimal places.
+-- Return the result table in any order.
 
--- Solution 1:
--- This query first creates a Common Table Expression (CTE) to join Prices and UnitsSold based on matching product_id and ensuring that the purchase_date falls within the start_date and end_date period.
--- Then it calculates the average selling price using weighted average formula: (sum(units * price) / sum(units)) and rounds the result to 2 decimal places.
-
+-- SQL Solution 1
 WITH CTE AS (
     SELECT 
         p.product_id, 
@@ -43,9 +41,9 @@ WITH CTE AS (
         u.purchase_date, 
         u.units
     FROM 
-        Prices AS p
+        Prices p
     LEFT JOIN 
-        UnitsSold AS u 
+        UnitsSold u 
     ON 
         p.product_id = u.product_id 
         AND u.purchase_date BETWEEN p.start_date AND p.end_date
@@ -58,24 +56,28 @@ FROM
 GROUP BY 
     product_id;
 
--- Solution 2:
--- This solution performs a direct LEFT JOIN between the Prices and UnitsSold tables, and then calculates the average selling price in a similar way to Solution 1.
+-- Intuition:
+-- We need to calculate the weighted average selling price for each product based on the units sold within the corresponding price periods.
+-- The query first joins the Prices table with the UnitsSold table using a CTE, ensuring that the purchase dates fall within the price periods.
+-- Then, we calculate the average price using a weighted sum, dividing the total revenue by the total units sold for each product.
+-- IFNULL ensures that if no units were sold, the average price will be returned as 0.
 
+-- SQL Solution 2
 SELECT 
     p.product_id, 
     IFNULL(ROUND(SUM(p.price * u.units) / SUM(u.units), 2), 0) AS average_price
 FROM 
-    Prices AS p 
+    Prices p 
 LEFT JOIN 
-    UnitsSold AS u
+    UnitsSold u
 ON 
     p.product_id = u.product_id 
     AND u.purchase_date BETWEEN p.start_date AND p.end_date
 GROUP BY 
     p.product_id;
 
--- Explanation:
--- 1. Both solutions involve joining the `Prices` table with the `UnitsSold` table based on product_id and matching the purchase_date with the price period.
--- 2. The average price is calculated using the weighted average formula: `SUM(units * price) / SUM(units)`, and it is rounded to 2 decimal places.
--- 3. The `IFNULL` function is used to handle cases where a product may not have any units sold, resulting in an average price of 0.
--- 4. The `GROUP BY` clause groups the results by `product_id` to calculate the average price for each product.
+-- Intuition:
+-- This approach also calculates the average selling price for each product.
+-- Here, the weighted average is calculated directly within the main query without using a CTE.
+-- The logic remains the same, where we calculate the sum of the product of price and units sold and divide it by the total units sold.
+-- Again, IFNULL ensures that if no units were sold for a product, the average price will default to 0.

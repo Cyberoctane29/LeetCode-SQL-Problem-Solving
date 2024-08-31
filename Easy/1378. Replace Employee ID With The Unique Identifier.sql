@@ -23,27 +23,23 @@
 -- Each row of this table contains the id and the corresponding unique id of an employee in the company.
 
 -- Problem Statement
--- Write a solution to show the unique ID of each user. If a user does not have a unique ID, return null instead.
+-- Write a solution to show the unique ID of each user. If a user does not have a unique ID, show null.
 
--- Solution:
--- The query performs a RIGHT JOIN between the Employees table and the EmployeeUNI table to ensure all employees are included,
--- even those without a unique_id in the EmployeeUNI table. If there is no matching unique_id for an employee, the result should show NULL.
-
+-- SQL Solution
 SELECT 
-    eu.unique_id, 
+    eu.unique_id,
     e.name 
 FROM 
-    EmployeeUNI AS eu 
+    EmployeeUNI eu 
 RIGHT JOIN 
-    Employees AS e 
+    Employees e 
 ON 
     eu.id = e.id;
 
--- Explanation:
--- 1. **RIGHT JOIN**: We use a RIGHT JOIN to include all rows from the `Employees` table, and matching rows from the `EmployeeUNI` table.
---    If no match is found in `EmployeeUNI`, the result will include NULL for `unique_id`.
--- 2. **Selecting Columns**: The SELECT statement retrieves the `unique_id` from `EmployeeUNI` and the `name` from `Employees`.
--- 3. **ON Clause**: The join is based on the common `id` column present in both tables.
+-- Intuition:
+-- To list the employees along with their unique IDs, we need to join the `Employees` table with the `EmployeeUNI` table.
+-- Since we want to include all employees even if they don't have a unique ID, we use a RIGHT JOIN.
 
--- This solution ensures that every employee in the company is listed with their corresponding unique identifier if available,
--- or with NULL if they don't have a unique ID in the `EmployeeUNI` table.
+-- Explanation:
+-- The RIGHT JOIN ensures that every employee in the `Employees` table is included in the result, even if there is no matching entry in the `EmployeeUNI` table.
+-- If an employee does not have a unique ID, the `unique_id` field will be NULL.
