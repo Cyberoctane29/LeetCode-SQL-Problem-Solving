@@ -1,1 +1,1 @@
-.sql for SQL scripts.
+*.sql linguist-detectable=true
