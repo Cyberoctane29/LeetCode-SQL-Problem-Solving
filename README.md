@@ -26,7 +26,7 @@ This collection serves as a structured reference for:
 
 ## Repository Structure
 
-`
+```sql
 LeetCode-SQL-Solutions/
 │── Easy/
 │   ├── problem_name_1.sql
@@ -37,7 +37,7 @@ LeetCode-SQL-Solutions/
 │── Hard/
 │   ├── problem_name_5.sql
 │   ├── problem_name_6.sql
-`
+```
 
 ## Example Solution Format
 
