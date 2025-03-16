@@ -1,4 +1,4 @@
-# LeetCode SQL Solutions
+# 🗄️ LeetCode SQL Solutions
 
 Welcome to my **LeetCode SQL Solutions** repository!
 
@@ -27,16 +27,16 @@ This collection serves as a structured reference for:
 ## Repository Structure
 
 ```sql
-LeetCode-SQL-Solutions/
-│── Easy/
-│   ├── problem_name_1.sql
-│   ├── problem_name_2.sql
-│── Medium/
-│   ├── problem_name_3.sql
-│   ├── problem_name_4.sql
-│── Hard/
-│   ├── problem_name_5.sql
-│   ├── problem_name_6.sql
+-- LeetCode-SQL-Solutions/
+-- │── Easy/
+-- │   ├── problem_name_1.sql
+-- │   ├── problem_name_2.sql
+-- │── Medium/
+-- │   ├── problem_name_3.sql
+-- │   ├── problem_name_4.sql
+-- │── Hard/
+-- │   ├── problem_name_5.sql
+-- │   ├── problem_name_6.sql
 ```
 
 ## Example Solution Format
@@ -74,4 +74,4 @@ WHERE some_condition;
 
 I hope this resource proves valuable for those aiming to strengthen their SQL skills and learn new techniques.
 
-Let’s learn and grow together!  Happy coding! 
+Let’s learn and grow together! 🚀 Happy coding! 🎯
