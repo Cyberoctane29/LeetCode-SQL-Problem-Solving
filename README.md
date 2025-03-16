@@ -66,10 +66,10 @@ FROM TableName
 WHERE some_condition;
 
 -- Intuition:
--- [Explain why this approach works effectively.]
+-- [Describe the core idea behind solving this problem. Explain the thought process used to arrive at the solution.]
 
 -- Explanation:
--- [Break down the logic of the query step by step.]
+-- [Explain why this approach works effectively and break down the logic of the code step by step.]
 ```
 
 I hope this resource proves valuable for those aiming to strengthen their SQL skills and learn new techniques.
