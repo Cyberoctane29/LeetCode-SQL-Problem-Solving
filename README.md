@@ -2,7 +2,7 @@
 
 Welcome to my **LeetCode SQL Solutions** repository!
 
-This repository contains my SQL solutions to LeetCode problems, systematically categorized by difficulty level:
+This repository contains my SQL problem solving approach and solutions to LeetCode problems, systematically categorized by difficulty level:
 
 - **Easy**
 - **Medium**
