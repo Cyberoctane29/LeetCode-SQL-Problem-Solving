@@ -1,6 +1,6 @@
 # 🗄️ LeetCode SQL Problem Solving
 
-Welcome to my **LeetCode SQL Solutions** repository!
+Welcome to my **LeetCode SQL Problem Solving** repository!
 
 This repository contains my SQL problem solving approach and solutions to LeetCode problems, systematically categorized by difficulty level:
 
