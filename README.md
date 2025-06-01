@@ -1,4 +1,4 @@
-# 🗄️ LeetCode SQL Solutions
+# 🗄️ LeetCode SQL Problem Solving
 
 Welcome to my **LeetCode SQL Solutions** repository!
 
