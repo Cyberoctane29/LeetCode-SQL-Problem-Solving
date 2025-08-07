@@ -17,36 +17,7 @@
 -- Write a solution to find the people who have the most friends and the most friends number.
 -- The test cases are generated so that only one person has the most friends.
 
--- SQL Solution 1: Using UNION ALL to combine requester and accepter IDs
-WITH Combined AS (
-    SELECT requester_id FROM RequestAccepted
-    UNION ALL
-    SELECT accepter_id AS requester_id FROM RequestAccepted
-),
-Filt AS (
-    SELECT 
-        requester_id,
-        COUNT(*) AS num
-    FROM 
-        Combined
-    GROUP BY 
-        requester_id
-)
-SELECT requester_id AS id, num 
-FROM Filt 
-WHERE num = (SELECT MAX(num) FROM Filt);
-
--- Intuition:
--- To find the person with the most friends, we need to count each user's occurrences as both requester and accepter.
--- We combine these occurrences into a single list and then count the number of times each user appears.
--- Finally, we select the user with the maximum count.
-
--- Explanation:
--- 1. The `Combined` CTE consolidates all friend relationships into a single list by using `UNION ALL` to include both `requester_id` and `accepter_id`.
--- 2. The `Filt` CTE groups the combined list by `requester_id` and counts the number of occurrences for each user, which represents their total number of friends.
--- 3. We then select the user with the maximum number of friends by comparing each user's count to the highest count found in the `Filt` CTE.
-
--- SQL Solution 2: Using explicit joins and subqueries
+-- SQL Solution: Using explicit joins and subqueries
 WITH RI AS (
     SELECT requester_id FROM RequestAccepted
 ),
