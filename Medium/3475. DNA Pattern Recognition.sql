@@ -21,7 +21,7 @@
 -- 4. Sequence contains at least 3 consecutive 'G' (e.g., GGG, GGGG)
 -- Return results ordered by sample_id ascending.
 
--- Solution 1 (Using REGEXP)
+-- Solution 1 (Using Regular Expressions with REGEXP)
 
 SELECT 
     sample_id,
@@ -46,7 +46,7 @@ ORDER BY
 -- - 'G{3,}' finds sequences with at least three consecutive Gs.
 -- Each match sets a binary flag (1 for match, 0 otherwise).
 
--- Solution 2 (Using LIKE)
+-- Solution 2 (Using LIKE Wildcard Patterns)
 
 SELECT 
     sample_id,
