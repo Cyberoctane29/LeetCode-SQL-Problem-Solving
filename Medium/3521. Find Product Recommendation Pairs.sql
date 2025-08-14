@@ -1,4 +1,4 @@
--- Problem 3521: Find Product Recommendation Pairs
+-- Problem 521: Find Product Recommendation Pairs
 -- Difficulty: Medium
 
 -- Table: ProductPurchases
@@ -20,21 +20,20 @@
 -- | category    | varchar |
 -- | price       | decimal |
 -- +-------------+---------+
--- product_id is the primary key for this table.
+-- product_id is the primary key.
 -- Each row assigns a category and price to a product.
 
 -- Problem Statement:
--- Amazon wants to implement the "Customers who bought this also bought..." feature.
--- Task:
--- 1. Identify distinct product pairs purchased together by the same customers (where product1_id < product2_id).
--- 2. For each pair, find how many customers purchased both products.
--- 3. Only include product pairs purchased together by at least 3 different customers.
--- 4. Return the result ordered by:
---    - customer_count (descending)
---    - product1_id (ascending, tie-breaker)
---    - product2_id (ascending, tie-breaker).
+-- Implement the "Customers who bought this also bought..." feature by:
+-- 1. Identifying distinct product pairs (product1_id < product2_id) purchased by the same customers.
+-- 2. Counting how many distinct customers purchased both products.
+-- 3. Considering only pairs purchased by at least 3 different customers.
+-- 4. Returning results ordered by:
+--      - customer_count DESC
+--      - product1_id ASC (tie-breaker)
+--      - product2_id ASC (tie-breaker)
 
--- Solution (Using CROSS JOIN and Aggregation):
+-- Solution:
 
 WITH CTE AS (
     SELECT 
@@ -46,9 +45,9 @@ WITH CTE AS (
         productpurchases AS a
     CROSS JOIN 
         productpurchases AS b
-    HAVING 
-        product1_id < product2_id 
-        AND user1_id = user2_id
+    WHERE 
+        a.product_id < b.product_id
+        AND a.user_id = b.user_id
 ),
 CTE1 AS (
     SELECT 
@@ -72,11 +71,9 @@ CTE2 AS (
     FROM 
         CTE1 AS c
     LEFT JOIN 
-        productinfo AS p1 
-        ON c.product1_id = p1.product_id
+        productinfo AS p1 ON c.product1_id = p1.product_id
     LEFT JOIN 
-        productinfo AS p2 
-        ON c.product2_id = p2.product_id
+        productinfo AS p2 ON c.product2_id = p2.product_id
 )
 SELECT 
     *
@@ -88,14 +85,14 @@ ORDER BY
     product2_id;
 
 -- Intuition:
--- Use a self-join (CROSS JOIN) to generate all possible product combinations per customer.
--- Keep only pairs where the first product ID is less than the second to avoid duplicates.
--- Group by product pair to count the number of customers who bought both.
--- Filter to include only pairs purchased by at least 3 customers.
--- Enrich results with product category data from ProductInfo.
+-- Pair products bought by the same user while ensuring each pair is unique.
+-- Count how many distinct customers purchased both products.
+-- Filter for pairs with at least 3 customers and include product category information.
+-- Sort to prioritize the most frequently co-purchased pairs.
 
 -- Explanation:
--- - CTE: Generates all product combinations for the same customer.
--- - CTE1: Aggregates customer counts per product pair, filters for >= 3 customers.
--- - CTE2: Joins with ProductInfo to get category details for both products.
--- - Final SELECT: Orders by customer_count DESC, then product1_id ASC, then product2_id ASC.
+-- The CROSS JOIN with filtering matches products from the same user while avoiding duplicates by enforcing product1_id < product2_id.
+-- Aggregating on product pairs provides the count of distinct customers for each.
+-- The HAVING clause filters out infrequent pairs.
+-- Joining with product information tables enriches the output with category details.
+-- The ORDER BY clause ensures results are sorted by popularity, then by product IDs for tie-breaking.
