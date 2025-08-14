@@ -1,4 +1,4 @@
--- Problem 521: Find Product Recommendation Pairs
+-- Problem 3521: Find Product Recommendation Pairs
 -- Difficulty: Medium
 
 -- Table: ProductPurchases
