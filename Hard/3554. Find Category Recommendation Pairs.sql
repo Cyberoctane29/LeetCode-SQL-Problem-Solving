@@ -3,72 +3,83 @@
 
 -- Table: ProductPurchases
 -- +-------------+------+
--- | Column Name | Type |
+-- | Column Name | Type | 
 -- +-------------+------+
 -- | user_id     | int  |
 -- | product_id  | int  |
 -- | quantity    | int  |
 -- +-------------+------+
--- (user_id, product_id) is the unique key.
--- Each row is a purchase of a product by a user.
+-- (user_id, product_id) is the unique identifier for this table.
+-- Each row represents a purchase of a product by a user in a specific quantity.
 
 -- Table: ProductInfo
 -- +-------------+---------+
--- | Column Name | Type    |
+-- | Column Name | Type    | 
 -- +-------------+---------+
 -- | product_id  | int     |
 -- | category    | varchar |
 -- | price       | decimal |
 -- +-------------+---------+
--- product_id is the unique key.
+-- product_id is the unique identifier for this table.
 -- Each row assigns a category and price to a product.
 
 -- Problem Statement:
--- Find all category pairs (category1 < category2).
--- For each pair, count unique users who purchased products from both categories.
--- A pair is reportable if at least 3 distinct users purchased from both.
--- Return (category1, category2, customer_count), sorted by:
---   1. customer_count DESC
---   2. category1 ASC
---   3. category2 ASC
+-- Amazon wants to understand shopping patterns across product categories.
+-- Find all category pairs (where category1 < category2).
+-- For each category pair, determine the number of unique customers who purchased products from both categories.
+-- A category pair is considered reportable if at least 3 different customers have purchased products from both categories.
+-- Return the result table of reportable category pairs ordered by:
+--   - customer_count descending
+--   - category1 ascending (lexicographically) in case of tie
+--   - category2 ascending in case of tie.
 
+-- Solution (Using cross join on same user purchases):
 
--- Solution:
-
-WITH user_products AS (
-    SELECT pp.user_id, pi.category
-    FROM ProductPurchases pp
-    JOIN ProductInfo pi
-      ON pp.product_id = pi.product_id
-    GROUP BY pp.user_id, pi.category
+WITH CTE AS (
+    SELECT 
+        p1.user_id AS user_id1,
+        p1.product_id AS product_id1,
+        p2.user_id AS user_id2,
+        p2.product_id AS product_id2
+    FROM productpurchases AS p1 
+    CROSS JOIN productpurchases AS p2 
+    WHERE p1.user_id = p2.user_id 
+      AND p1.product_id != p2.product_id
 ),
-category_pairs AS (
-    SELECT up1.user_id,
-           up1.category AS category1,
-           up2.category AS category2
-    FROM user_products up1
-    JOIN user_products up2
-      ON up1.user_id = up2.user_id
-     AND up1.category < up2.category
+CTE1 AS (
+    SELECT 
+        c.user_id1,
+        c.product_id1,
+        pi1.category AS category1,
+        c.user_id2,
+        c.product_id2,
+        pi2.category AS category2
+    FROM CTE AS c 
+    LEFT JOIN productinfo AS pi1 
+        ON c.product_id1 = pi1.product_id 
+    LEFT JOIN productinfo AS pi2 
+        ON c.product_id2 = pi2.product_id 
+    ORDER BY c.user_id1
 )
-SELECT category1,
-       category2,
-       COUNT(DISTINCT user_id) AS customer_count
-FROM category_pairs
-GROUP BY category1, category2
-HAVING COUNT(DISTINCT user_id) >= 3
+SELECT 
+    category1, 
+    category2, 
+    COUNT(DISTINCT user_id1) AS customer_count 
+FROM CTE1 
+WHERE category1 < category2 
+GROUP BY category1, category2 
+HAVING customer_count >= 3 
 ORDER BY customer_count DESC, category1, category2;
 
-
 -- Intuition:
--- Each user’s purchases can be reduced to a set of categories.
--- If a user has both category A and category B, they contribute to pair (A,B).
--- Repeating this across users gives us all category co-purchases.
--- Filtering ensures only pairs with ≥ 3 customers are reportable.
+-- We need to find pairs of categories that customers frequently buy together.
+-- By cross joining purchases of the same user, we can generate category pairs for each customer.
+-- Counting distinct users who purchased both categories gives us the required customer_count.
+-- Only category pairs with at least 3 customers are reportable.
 
 -- Explanation:
--- 1. user_products maps each user to the distinct categories they’ve bought.
--- 2. category_pairs generates category pairs (category1 < category2) for each user.
--- 3. Final SELECT counts distinct users per pair.
--- 4. HAVING ensures only pairs with at least 3 users remain.
--- 5. ORDER sorts results per requirement.
+-- - CTE creates all pairs of products purchased by the same user (excluding identical products).
+-- - CTE1 joins product information to map product_ids to categories for both items in the pair.
+-- - The final SELECT filters for category1 < category2 to avoid duplicate/reversed pairs.
+-- - We count distinct users per category pair, keep only pairs with at least 3 users,
+--   and order by customer_count, then category1, then category2 as required.
