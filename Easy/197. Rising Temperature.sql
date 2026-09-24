@@ -43,11 +43,11 @@ WHERE
 -- We then select the ids where the current day's temperature is higher than the previous day's temperature.
 
 -- Solution 2: Using self-join with DATEDIFF()
-SELECT w2.id
+SELECT w1.id
 FROM Weather w1
 JOIN Weather w2
 ON DATEDIFF(w1.recordDate, w2.recordDate) = 1
-AND w2.temperature > w1.temperature;
+AND w1.temperature > w2.temperature;
 
 -- Intuition:
 -- By joining the Weather table with itself, we can compare each day’s temperature with the temperature of the previous day.
@@ -57,7 +57,7 @@ AND w2.temperature > w1.temperature;
 -- This query joins the Weather table with itself where the difference in recordDate is exactly one day (i.e., the current recordDate is one day after the previous recordDate).
 -- It selects the ids where the temperature of the current day (w2) is greater than the temperature of the previous day (w1).
 
--- Solution 3: Alternative self-join with DATEDIFF() (your provided query)
+-- Solution 3: Alternative self-join with DATEDIFF()
 SELECT w2.id
 FROM Weather w1
 JOIN Weather w2
